@@ -8,6 +8,8 @@ const bot = new TelegramBot(token, { polling: true });
 const VoteUser = require('./models').VoteUser;
 const DebtsProperties = require('./models').DebtsProperties;
 const DebtsTransports = require('./models').DebtsTransports;
+const RegistryCik = require('./models').RegistryCik;
+const ListSite = require('./models').ListSite;
 
 let startOptions = {
     reply_markup: JSON.stringify({
@@ -54,9 +56,22 @@ bot.on('message', (msg) => {
 
         default:
             if ( storage.getItem('action') == 1 ) {
-                VoteUser.findOne({ where: {iin: text} })
+                RegistryCik.findOne({ where: {iin: text} })
                     .then(res => {
-                        bot.sendMessage(msg.chat.id, 'Ваш участок: ' + res.station);
+                        ListSite.findOne({ where: {site_code: res.site_code} })
+                            .then(result => {
+                                let textResponse = '_' + res.last_name + ' ' + res.first_name + ' ' + res.third_name + '_\n';
+                                textResponse += '*Ваш избирательный участок*: \n';
+                                textResponse += result.locality_ru ? result.locality_ru + ', ' : '';
+                                textResponse += result.site_name_ru ? result.site_name_ru + ', ' : '';
+                                textResponse += result.address_ru ? result.address_ru + ', ' : '';
+                                textResponse += result.house ? result.house + ', ' : '';
+
+                                bot.sendMessage(msg.chat.id, textResponse, { parse_mode: 'markdown' });
+                            })
+                            .catch(error => {
+                                bot.sendMessage(msg.chat.id, 'Информация не найдена');
+                            })
                     })
                     .catch(err => {
                         bot.sendMessage(msg.chat.id, 'Информация не найдена');

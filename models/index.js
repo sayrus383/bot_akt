@@ -3,6 +3,8 @@ const CONFIG = require('./../config');
 const VoteUserModel = require('./VoteUser');
 const DebtsPropertiesModel = require('./DebtsProperties');
 const DebtsTransportsModel = require('./DebtsTransports');
+const RegistryCikModel = require('./RegistryCik');
+const ListSiteModel = require('./ListSite');
 
 const sequelize = new Sequelize(CONFIG.db_name, CONFIG.db_user, CONFIG.db_password, {
     host: CONFIG.db_host,
@@ -35,9 +37,13 @@ sequelize
 const VoteUser = VoteUserModel(sequelize, Sequelize);
 const DebtsProperties = DebtsPropertiesModel(sequelize, Sequelize);
 const DebtsTransports = DebtsTransportsModel(sequelize, Sequelize);
+const RegistryCik = RegistryCikModel(sequelize, Sequelize);
+const ListSite = ListSiteModel(sequelize, Sequelize);
 
 module.exports = {
   VoteUser,
   DebtsProperties,
-  DebtsTransports
+  DebtsTransports,
+  RegistryCik,
+  ListSite,
 };
