@@ -94,10 +94,20 @@ bot.on('message', (msg) => {
                             .then(result => {
                                 let textResponse = '_' + res.last_name + ' ' + res.first_name + ' ' + res.third_name + '_\n';
                                 textResponse += '*' + yourSite() +'*: \n';
-                                textResponse += result.locality_ru ? result.locality_ru + ', ' : '';
-                                textResponse += result.site_name_ru ? result.site_name_ru + ', ' : '';
-                                textResponse += result.address_ru ? result.address_ru + ', ' : '';
+
+                                if ( i18n.getLocale() == 'ru' ) {
+                                    textResponse += result.locality_ru ? result.locality_ru + ', ' : '';
+                                    textResponse += result.site_name_ru ? result.site_name_ru + ', ' : '';
+                                    textResponse += result.address_ru ? result.address_ru + ', ' : '';
+                                }
+                                else if ( i18n.getLocale() == 'kk' ) {
+                                    textResponse += result.locality_kk ? result.locality_kk + ', ' : '';
+                                    textResponse += result.site_name_kk ? result.site_name_kk + ', ' : '';
+                                    textResponse += result.address_kk ? result.address_kk + ', ' : '';
+                                }
+
                                 textResponse += result.house ? result.house : '';
+
 
                                 bot.sendMessage(msg.chat.id, textResponse, { parse_mode: 'markdown' });
                             })
