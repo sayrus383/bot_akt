@@ -65,7 +65,7 @@ bot.on('message', (msg) => {
                                 textResponse += result.locality_ru ? result.locality_ru + ', ' : '';
                                 textResponse += result.site_name_ru ? result.site_name_ru + ', ' : '';
                                 textResponse += result.address_ru ? result.address_ru + ', ' : '';
-                                textResponse += result.house ? result.house + ', ' : '';
+                                textResponse += result.house ? result.house : '';
 
                                 bot.sendMessage(msg.chat.id, textResponse, { parse_mode: 'markdown' });
                             })
