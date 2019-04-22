@@ -5,27 +5,59 @@ const TelegramBot = require('node-telegram-bot-api');
 const storage = require('node-sessionstorage')
 const token = process.env.BOT_TOKEN_API;
 const bot = new TelegramBot(token, { polling: true });
-const VoteUser = require('./models').VoteUser;
+const i18n = require('i18n');
 const DebtsProperties = require('./models').DebtsProperties;
 const DebtsTransports = require('./models').DebtsTransports;
 const RegistryCik = require('./models').RegistryCik;
 const ListSite = require('./models').ListSite;
 
-let startOptions = {
+i18n.configure({
+    locales:['kk', 'ru'],
+    directory: __dirname + '/lang',
+    defaultLocale: 'ru',
+});
+
+
+var langOptions = {
     reply_markup: JSON.stringify({
-      keyboard: [
-        [{ text: 'Поиск избирательного участка', action: 1 }],
-        // [{ text: 'Просмотр номера очереди на получение земельных участков', action: 2 }],
-        [{ text: 'Реестр должников по имущественному налогу', action: 3 }],
-        [{ text: 'Реестр должников по транспортному налогу', action: 4 }]
-      ],
-      resize_keyboard: true,
-      one_time_keyboard: true,
+      inline_keyboard: [
+        [{ text: 'Қазақша 🇰🇿', callback_data: 'kk' }],
+        [{ text: 'Русский 🇷🇺', callback_data: 'ru' }],
+      ]
     })
-};
+  };
+
+let startOptions = () => {
+    return {
+        reply_markup: JSON.stringify({
+        keyboard: [
+            [{ text: i18n.__('site_search'), action: 1 }],
+            // [{ text: 'Просмотр номера очереди на получение земельных участков', action: 2 }],
+            [{ text: i18n.__('properties_search'), action: 3 }],
+            [{ text: i18n.__('transports_search'), action: 4 }]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: true,
+        })
+    };
+}
+
+let notFound = () => {
+    return i18n.__('not_found');
+}
+
+let yourSite = () => {
+    return i18n.__('your_site');
+}
+
+bot.on('callback_query', function (msg) {
+    i18n.setLocale(msg.data);
+    bot.sendMessage(msg.message.chat.id, i18n.__('select_action'), startOptions());
+});
 
 bot.onText(/\/start/, function (msg) {
-    bot.sendMessage(msg.chat.id, 'Выберите действие:', startOptions);
+    storage.setItem('action', 0);
+    bot.sendMessage(msg.chat.id, 'Выберите язык (Тілді таңдаңыз)', langOptions);
 });
 
 storage.setItem('action', 0);
@@ -34,8 +66,8 @@ bot.on('message', (msg) => {
     let text = msg.text;
 
     switch (text) {
-        case 'Поиск избирательного участка':
-            bot.sendMessage(msg.chat.id, 'Введите ваш ИИН');
+        case i18n.__('site_search'):
+            bot.sendMessage(msg.chat.id, i18n.__('write_iin'));
             storage.setItem('action', 1);
             break;
 
@@ -44,13 +76,13 @@ bot.on('message', (msg) => {
             storage.setItem('action', 2);
             break;
 
-        case 'Реестр должников по имущественному налогу':
-            bot.sendMessage(msg.chat.id, 'Введите ваш ИИН');
+        case i18n.__('properties_search'):
+            bot.sendMessage(msg.chat.id, i18n.__('write_iin'));
             storage.setItem('action', 3);
             break;
 
-        case 'Реестр должников по транспортному налогу':
-            bot.sendMessage(msg.chat.id, 'Введите ваш ИИН');
+        case i18n.__('transports_search'):
+            bot.sendMessage(msg.chat.id, i18n.__('write_iin'));
             storage.setItem('action', 4);
             break;
 
@@ -61,7 +93,7 @@ bot.on('message', (msg) => {
                         ListSite.findOne({ where: {site_code: res.site_code} })
                             .then(result => {
                                 let textResponse = '_' + res.last_name + ' ' + res.first_name + ' ' + res.third_name + '_\n';
-                                textResponse += '*Ваш избирательный участок*: \n';
+                                textResponse += '*' + yourSite() +'*: \n';
                                 textResponse += result.locality_ru ? result.locality_ru + ', ' : '';
                                 textResponse += result.site_name_ru ? result.site_name_ru + ', ' : '';
                                 textResponse += result.address_ru ? result.address_ru + ', ' : '';
@@ -70,19 +102,19 @@ bot.on('message', (msg) => {
                                 bot.sendMessage(msg.chat.id, textResponse, { parse_mode: 'markdown' });
                             })
                             .catch(error => {
-                                bot.sendMessage(msg.chat.id, 'Информация не найдена');
+                                bot.sendMessage(msg.chat.id, notFound());
                             })
                     })
                     .catch(err => {
-                        bot.sendMessage(msg.chat.id, 'Информация не найдена');
+                        bot.sendMessage(msg.chat.id, notFound());
                     })
 
                 storage.setItem('action', 0);
             }
-            if ( storage.getItem('action') == 2 ) {
+            else if ( storage.getItem('action') == 2 ) {
                 storage.setItem('action', 0);
             }
-            if ( storage.getItem('action') == 3 ) {
+            else if ( storage.getItem('action') == 3 ) {
                 DebtsProperties.findOne({ where: {iin: text} })
                     .then(res => {
                         bot.sendMessage(msg.chat.id, '_' + res.full_name + '_\n' + 
@@ -97,12 +129,12 @@ bot.on('message', (msg) => {
                             , { parse_mode: 'markdown' });
                     })
                     .catch(err => {
-                        bot.sendMessage(msg.chat.id, 'Информация не найдена');
+                        bot.sendMessage(msg.chat.id, notFound());
                     })
 
                 storage.setItem('action', 0);
             }
-            if ( storage.getItem('action') == 4 ) {
+            else if ( storage.getItem('action') == 4 ) {
                 DebtsTransports.findOne({ where: {iin: text} })
                     .then(res => {
                         bot.sendMessage(msg.chat.id, '_' + res.full_name + '_\n' + 
@@ -113,10 +145,14 @@ bot.on('message', (msg) => {
                             , { parse_mode: 'markdown' });
                     })
                     .catch(err => {
-                        bot.sendMessage(msg.chat.id, 'Информация не найдена');
+                        bot.sendMessage(msg.chat.id, notFound());
                     })
 
                 storage.setItem('action', 0);
+            }
+            else {
+                storage.setItem('action', 0);
+                bot.sendMessage(msg.chat.id, i18n.__('select_action'), startOptions());
             }
       }
 });
