@@ -94,6 +94,7 @@ bot.on('message', (msg) => {
                             .then(result => {
                                 let textResponse = '_' + res.last_name + ' ' + res.first_name + ' ' + res.third_name + '_\n';
                                 textResponse += '*' + yourSite() +'*: \n';
+                                textResponse += '*№ ' + result.site_code +'*, ';
 
                                 if ( i18n.getLocale() == 'ru' ) {
                                     textResponse += result.locality_ru ? result.locality_ru + ', ' : '';
