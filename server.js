@@ -110,7 +110,13 @@ bot.on('message', (msg) => {
                             })
                     })
                     .catch(err => {
-                        bot.sendMessage(msg.chat.id, i18n.__('not_found_site') + ':\n' + '*8(7132) 445603, 445601, 445602, 445600*', { parse_mode: 'markdown' });
+                        bot.sendMessage(msg.chat.id, i18n.__('not_found_site') + ':\n' + 
+                        '+7 (7132) 44-56-00\n' +  
+                        '+7 (7132) 44-56-01\n' +  
+                        '+7 (7132) 44-56-02\n' +  
+                        '+7 (7132) 44-56-03\n',  
+                        
+                        { parse_mode: 'markdown' });
                     })
 
                 storage.setItem('action', 0);
