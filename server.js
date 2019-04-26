@@ -111,10 +111,10 @@ bot.on('message', (msg) => {
                     })
                     .catch(err => {
                         bot.sendMessage(msg.chat.id, i18n.__('not_found_site') + ':\n' + 
-                        '+7 (7132) 44-56-00\n' +  
+                        '+7 (7132) 44-56-03\n' +  
                         '+7 (7132) 44-56-01\n' +  
                         '+7 (7132) 44-56-02\n' +  
-                        '+7 (7132) 44-56-03\n',  
+                        '+7 (7132) 44-56-00\n',  
                         
                         { parse_mode: 'markdown' });
                     })
