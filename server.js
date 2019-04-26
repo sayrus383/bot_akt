@@ -42,13 +42,6 @@ let startOptions = () => {
     };
 }
 
-let notFound = () => {
-    return i18n.__('not_found');
-}
-
-let yourSite = () => {
-    return i18n.__('your_site');
-}
 
 bot.on('callback_query', function (msg) {
     i18n.setLocale(msg.data);
@@ -93,7 +86,7 @@ bot.on('message', (msg) => {
                         ListSite.findOne({ where: {site_code: res.site_code} })
                             .then(result => {
                                 let textResponse = '_' + res.last_name + ' ' + res.first_name + ' ' + res.third_name + '_\n';
-                                textResponse += '*' + yourSite() +'*: \n';
+                                textResponse += '*' + i18n.__('your_site') +'*: \n';
                                 textResponse += '*№ ' + result.site_code +'*, ';
 
                                 if ( i18n.getLocale() == 'ru' ) {
@@ -113,11 +106,11 @@ bot.on('message', (msg) => {
                                 bot.sendMessage(msg.chat.id, textResponse, { parse_mode: 'markdown' });
                             })
                             .catch(error => {
-                                bot.sendMessage(msg.chat.id, notFound());
+                                bot.sendMessage(msg.chat.id, i18n.__('not_found_site') + ':\n' + '*8(7132) 445603, 445601, 445602, 445600*');
                             })
                     })
                     .catch(err => {
-                        bot.sendMessage(msg.chat.id, notFound());
+                        bot.sendMessage(msg.chat.id, i18n.__('not_found_site') + ':\n' + '*8(7132) 445603, 445601, 445602, 445600*');
                     })
 
                 storage.setItem('action', 0);
@@ -140,7 +133,7 @@ bot.on('message', (msg) => {
                             , { parse_mode: 'markdown' });
                     })
                     .catch(err => {
-                        bot.sendMessage(msg.chat.id, notFound());
+                        bot.sendMessage(msg.chat.id, i18n.__('not_found'));
                     })
 
                 storage.setItem('action', 0);
@@ -156,7 +149,7 @@ bot.on('message', (msg) => {
                             , { parse_mode: 'markdown' });
                     })
                     .catch(err => {
-                        bot.sendMessage(msg.chat.id, notFound());
+                        bot.sendMessage(msg.chat.id, i18n.__('not_found'));
                     })
 
                 storage.setItem('action', 0);
