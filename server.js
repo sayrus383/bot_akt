@@ -106,11 +106,11 @@ bot.on('message', (msg) => {
                                 bot.sendMessage(msg.chat.id, textResponse, { parse_mode: 'markdown' });
                             })
                             .catch(error => {
-                                bot.sendMessage(msg.chat.id, i18n.__('not_found_site') + ':\n' + '*8(7132) 445603, 445601, 445602, 445600*');
+                                bot.sendMessage(msg.chat.id, i18n.__('not_found_site') + ':\n' + '*8(7132) 445603, 445601, 445602, 445600*', { parse_mode: 'markdown' });
                             })
                     })
                     .catch(err => {
-                        bot.sendMessage(msg.chat.id, i18n.__('not_found_site') + ':\n' + '*8(7132) 445603, 445601, 445602, 445600*');
+                        bot.sendMessage(msg.chat.id, i18n.__('not_found_site') + ':\n' + '*8(7132) 445603, 445601, 445602, 445600*', { parse_mode: 'markdown' });
                     })
 
                 storage.setItem('action', 0);
