@@ -10,6 +10,7 @@ const DebtsProperties = require('./models').DebtsProperties;
 const DebtsTransports = require('./models').DebtsTransports;
 const RegistryCik = require('./models').RegistryCik;
 const ListSite = require('./models').ListSite;
+const SearchHistory = require('./models').SearchHistory;
 
 i18n.configure({
     locales:['kk', 'ru'],
@@ -102,6 +103,10 @@ bot.on('message', (msg) => {
 
                                 textResponse += result.house ? result.house : '';
 
+                                SearchHistory.create({
+                                    iin: text,
+                                    type: 'telegram_bot'
+                                });
 
                                 bot.sendMessage(msg.chat.id, textResponse, { parse_mode: 'markdown' });
                             })

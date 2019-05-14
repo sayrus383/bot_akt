@@ -5,6 +5,8 @@ const DebtsPropertiesModel = require('./DebtsProperties');
 const DebtsTransportsModel = require('./DebtsTransports');
 const RegistryCikModel = require('./RegistryCik');
 const ListSiteModel = require('./ListSite');
+const SearchHistoryModel = require('./SearchHistory');
+
 
 const sequelize = new Sequelize(CONFIG.db_name, CONFIG.db_user, CONFIG.db_password, {
     host: CONFIG.db_host,
@@ -39,6 +41,8 @@ const DebtsProperties = DebtsPropertiesModel(sequelize, Sequelize);
 const DebtsTransports = DebtsTransportsModel(sequelize, Sequelize);
 const RegistryCik = RegistryCikModel(sequelize, Sequelize);
 const ListSite = ListSiteModel(sequelize, Sequelize);
+const SearchHistory = SearchHistoryModel(sequelize, Sequelize);
+
 
 module.exports = {
   VoteUser,
@@ -46,4 +50,5 @@ module.exports = {
   DebtsTransports,
   RegistryCik,
   ListSite,
+  SearchHistory
 };
